@@ -140,6 +140,18 @@ enterprise-soc-lab-splunk
 
 ---
 
+## Configuration
+
+The repository includes example Splunk configuration files used during the lab deployment.
+
+- inputs.conf
+- outputs.conf
+- server.conf
+
+These files demonstrate how Windows Event Logs were collected and forwarded to Splunk Enterprise.
+
+---
+
 ## Author
 
 Shasi Kumar Yadav
