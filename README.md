@@ -326,7 +326,7 @@ This project demonstrates practical experience with:
 - Windows Event Logging
 - Active Directory
 - Splunk Enterprise
-- Splunk Universal Forwarder
+- Splunk Universal Forwarders
 - Detection Engineering
 - SPL (Search Processing Language)
 - Security Monitoring
@@ -343,7 +343,7 @@ This project demonstrates practical experience with:
 
 Security Engineering Portfolio Project
 
-LinkedIn: *(https://www.linkedin.com/in/anala-shasi-kumar/)*
+LinkedIn: *[(Click)](https://www.linkedin.com/in/anala-shasi-kumar/)*
 
 ---
 
