@@ -49,7 +49,6 @@ Indexing & Search
 | **inputs.conf** | Defines the Windows Event Log sources that the Splunk Universal Forwarder monitors and collects. |
 | **outputs.conf** | Configures the destination Splunk Enterprise server and manages secure event forwarding. |
 | **server.conf** | Contains basic server configuration settings required by the Splunk instance. Sensitive values have been removed. |
-| **deploymentclient.conf** *(Optional)* | Used when connecting the Universal Forwarder to a Splunk Deployment Server for centralized configuration management. |
 
 ---
 
@@ -82,12 +81,6 @@ In this lab, the Universal Forwarder sends Windows Event Logs to Splunk Enterpri
 This file contains general configuration settings for the Splunk instance, such as server identification and basic service parameters.
 
 Only non-sensitive configuration examples are included in this repository.
-
----
-
-## deploymentclient.conf *(Optional)*
-
-Although not required for this lab, this configuration file demonstrates how Universal Forwarders can connect to a Splunk Deployment Server in larger enterprise environments, allowing administrators to centrally manage configurations across multiple systems.
 
 ---
 
