@@ -343,7 +343,7 @@ This project demonstrates practical experience with:
 
 Security Engineering Portfolio Project
 
-LinkedIn: *[(Add your LinkedIn profile link)](https://www.linkedin.com/in/anala-shasi-kumar/)*
+LinkedIn: *(https://www.linkedin.com/in/anala-shasi-kumar/)*
 
 ---
 
