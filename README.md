@@ -208,7 +208,7 @@ reports/
 
 ### Enterprise SOC Dashboard
 
-![Enterprise SOC Dashboard](screenshots/enterprise-soc-dashboard.png)
+![Enterprise SOC Dashboard](screenshots/enterprise-soc-dashboard.jpg)
 
 The dashboard provides centralized monitoring for authentication activity, Windows security events, and investigation timelines.
 
