@@ -27,6 +27,19 @@ This project showcases practical Security Engineering concepts including SIEM de
 
 ---
 
+## Project Highlights
+
+- SIEM Platform: Splunk Enterprise 10.4
+- Identity Management: Active Directory
+- Log Collection: Splunk Universal Forwarder
+- Data Sources: Windows Event Logs
+- Detection Engineering: Custom SPL Alerts
+- Dashboard Development: Interactive SOC Dashboard
+- Investigation: Windows Event Analysis
+- Documentation: Enterprise-style technical documentation
+
+---
+
 # Architecture
 
 ```
