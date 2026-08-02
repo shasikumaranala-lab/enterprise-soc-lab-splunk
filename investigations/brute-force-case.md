@@ -1,27 +1,55 @@
-# Incident Investigation: Brute Force Authentication Attempt
+# Incident Investigation Report: Brute Force Authentication Attempt
 
-## Incident Summary
+## Overview
 
-A high number of failed authentication attempts were detected against a Windows account within a short period. The activity matched the organization's brute-force detection rule and triggered an alert in Splunk.
+This investigation documents a suspected brute-force authentication attack detected within the Enterprise SOC Lab. The incident was identified through a custom Splunk detection rule that monitors repeated failed Windows authentication attempts over a defined time period.
+
+Multiple failed logon events originating from the same source were observed within a five-minute window, exceeding the organization's alert threshold and triggering a security investigation.
 
 ---
 
-## Incident Information
+# Incident Summary
 
 | Field | Value |
 |--------|-------|
 | Incident ID | SOC-001 |
-| Detection Name | Brute Force Detection |
+| Incident Name | Brute Force Authentication Attempt |
+| Detection Rule | Brute Force Detection |
 | Severity | High |
+| Priority | High |
 | Status | Closed |
-| Date | YYYY-MM-DD |
-| Analyst | Shasi Kumar Yadav |
+| Detection Time | YYYY-MM-DD HH:MM |
+| Investigation Start | YYYY-MM-DD HH:MM |
+| Investigation End | YYYY-MM-DD HH:MM |
+| Analyst | Anala Shasi Kumar |
 
 ---
 
+# Incident Description
+
+The Enterprise SOC Dashboard generated a high-severity alert after detecting multiple failed Windows authentication attempts targeting the same user account within a five-minute period.
+
+The activity matched the organization's brute-force detection logic and required immediate investigation to determine whether unauthorized access had been achieved.
+
+---
+
+# Detection Details
+
 ## Detection Rule
 
-The following SPL query was used to identify repeated failed authentication attempts:
+Repeated failed authentication attempts from the same source IP address targeting the same user account within a five-minute window.
+
+### Windows Event IDs
+
+| Event ID | Description |
+|----------|-------------|
+| **4625** | Failed Account Logon |
+| **4624** | Successful Account Logon (Reviewed during investigation) |
+| **4740** | Account Lockout (Reviewed during investigation) |
+
+---
+
+## SPL Detection Query
 
 ```spl
 index=main EventCode=4625
@@ -33,125 +61,197 @@ index=main EventCode=4625
 
 ---
 
-## Alert Details
+# Alert Information
 
 | Field | Value |
 |--------|-------|
-| Windows Event ID | 4625 |
 | Alert Type | Scheduled Alert |
-| Schedule | Every 5 Minutes |
-| Trigger | More than 5 failed logins |
+| Alert Frequency | Every 5 Minutes |
+| Trigger Condition | Five or more failed authentication attempts |
+| Data Source | Windows Security Event Log |
+| SIEM Platform | Splunk Enterprise |
 
 ---
 
-## Investigation Process
+# Investigation Workflow
 
-### Step 1 - Review Authentication Events
+## Step 1 — Validate the Alert
 
-Search:
+### Objective
+
+Confirm that the alert represents genuine authentication activity and is not a false positive.
+
+### SPL Query
 
 ```spl
 index=main EventCode=4625
 ```
 
-Observation:
+### Findings
 
-- Multiple failed login attempts detected.
+- Multiple failed authentication events were identified.
+- Authentication failures occurred within a short time window.
+- The alert met the configured detection threshold.
 
 ---
 
-### Step 2 - Identify Target User
+## Step 2 — Identify the Targeted Account
 
-Fields reviewed:
+### Objective
+
+Determine which account was targeted and identify the originating system.
+
+### Fields Reviewed
 
 - Account_Name
 - ComputerName
 - Source_Network_Address
+- Logon_Type
 
-Result:
+### Findings
 
-Repeated authentication failures against the same account.
+Repeated authentication attempts targeted the same user account from a single source system.
 
 ---
 
-### Step 3 - Check for Successful Authentication
+## Step 3 — Review Authentication Outcome
 
-Search:
+### Objective
+
+Determine whether any failed authentication attempts eventually resulted in a successful login.
+
+### SPL Query
 
 ```spl
-index=main EventCode=4624
+index=main (EventCode=4624 OR EventCode=4625)
 ```
 
-Observation:
+### Findings
 
-No successful authentication observed after the failed attempts.
-
----
-
-### Step 4 - Review Related Security Events
-
-Reviewed:
-
-- New User Creation (4720)
-- Privileged Group Changes (4728 / 4732)
-- Password Reset (4724)
-
-No suspicious activity was identified.
+- Multiple failed authentication events were observed.
+- No successful authentication (Event ID 4624) occurred following the failed attempts.
+- No evidence of unauthorized account access was identified.
 
 ---
 
-## Timeline
+## Step 4 — Review Related Security Activity
 
-| Time | Event |
-|------|-------|
-| 10:00 | Failed login attempts started |
-| 10:03 | Splunk alert generated |
-| 10:05 | Investigation initiated |
-| 10:10 | Source host reviewed |
-| 10:15 | Incident closed |
+### Objective
 
----
+Identify any additional security events that may indicate account compromise or privilege escalation.
 
-## Indicators of Compromise (IOCs)
+### Events Reviewed
 
-| IOC | Value |
-|------|------|
-| Username | Administrator |
-| Host | WIN-SERVER-01 |
-| Source IP | 172.20.10.X |
-| Event ID | 4625 |
+| Event ID | Description |
+|----------|-------------|
+| 4720 | User Account Created |
+| 4724 | Password Reset Attempt |
+| 4728 | User Added to Global Security Group |
+| 4732 | User Added to Local Security Group |
+| 4740 | Account Lockout |
 
----
+### Findings
 
-## MITRE ATT&CK Mapping
-
-| Technique | ID |
-|-----------|----|
-| Brute Force | T1110 |
-| Valid Accounts | T1078 |
+No correlated administrative activity or privilege escalation events were detected.
 
 ---
 
-## Findings
+# Timeline of Events
 
-- Multiple failed authentication attempts detected.
-- No successful login observed.
-- No evidence of privilege escalation.
-- No persistence mechanisms identified.
-
----
-
-## Recommended Response
-
-- Monitor future authentication attempts.
-- Review account lockout policies.
-- Enforce strong password requirements.
-- Investigate repeated authentication failures from the same source.
+| Time | Activity |
+|------|----------|
+| 10:00 | Failed authentication attempts began |
+| 10:03 | Detection rule triggered |
+| 10:03 | Splunk generated security alert |
+| 10:05 | SOC analyst initiated investigation |
+| 10:10 | Authentication events reviewed |
+| 10:12 | Related Windows security events analyzed |
+| 10:15 | Investigation completed |
+| 10:16 | Incident closed |
 
 ---
 
-## Lessons Learned
+# Indicators of Compromise (IOCs)
 
-- Centralized logging enables rapid identification of authentication attacks.
-- Splunk alerts help reduce investigation time.
-- Windows Event IDs provide valuable information for incident analysis.
+| Indicator | Value |
+|-----------|-------|
+| Target User | Administrator |
+| Source IP Address | 172.20.10.X |
+| Source Host | WIN-SERVER-01 |
+| Windows Event ID | 4625 |
+| Attack Technique | Repeated Failed Authentication |
+
+---
+
+# Evidence Collected
+
+The following evidence was reviewed during the investigation:
+
+- Windows Security Event Logs
+- Splunk Search Results
+- Authentication Timeline
+- Detection Rule Output
+- Windows Event IDs
+- Source Host Information
+
+---
+
+# MITRE ATT&CK Mapping
+
+| Tactic | Technique | ID |
+|---------|-----------|----|
+| Credential Access | Brute Force | T1110 |
+| Defense Evasion | Valid Accounts (Reviewed) | T1078 |
+
+---
+
+# Risk Assessment
+
+| Category | Assessment |
+|----------|------------|
+| Likelihood | Medium |
+| Business Impact | Low |
+| Successful Compromise | No |
+| Privilege Escalation | Not Observed |
+| Persistence | Not Observed |
+
+---
+
+# Investigation Findings
+
+- Multiple failed authentication attempts were detected against a single user account.
+- Authentication attempts originated from the same source system.
+- No successful authentication was observed.
+- No account lockout occurred during the investigation.
+- No unauthorized account creation or privilege escalation events were identified.
+- No evidence of persistence or lateral movement was found.
+
+---
+
+# Containment and Response
+
+The following response actions are recommended:
+
+- Continue monitoring authentication activity from the identified source.
+- Verify the legitimacy of the source system.
+- Review password complexity and account lockout policies.
+- Reset credentials if suspicious activity continues.
+- Block malicious source IP addresses where appropriate.
+- Escalate recurring authentication attacks according to the incident response process.
+
+---
+
+# Lessons Learned
+
+- SIEM correlation rules enable rapid detection of authentication attacks.
+- Centralized Windows Event Log collection significantly improves investigation efficiency.
+- Custom SPL detection rules reduce analyst response time.
+- Mapping detections to the MITRE ATT&CK Framework provides additional context for threat analysis.
+
+---
+
+# Conclusion
+
+The investigation concluded that the detected activity was consistent with a brute-force authentication attempt targeting a Windows user account. Although repeated failed logon attempts were observed, no successful authentication or additional malicious activity was identified during the investigation period.
+
+The incident was documented, monitored, and closed after confirming that no compromise had occurred. Continued monitoring is recommended to identify any recurring authentication attacks against the affected account.
